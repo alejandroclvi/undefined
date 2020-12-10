@@ -60,12 +60,14 @@ function ProductListItem(props: any) {
       body: JSON.stringify(demo_order_details(id)),
     });
     try {
-      const order_details = await result.json();
-
+      // if it has a body and i can call .json() order was created
+      await result.json();
     } catch(e) {
       // TODO: implement better error handler, ... notify user
+      window.alert('An error occurred trying to process your order!');
       console.log('Error creating order', e);
     }
+    window.alert('Success! Your order was successfully processed.');
     setDisable(false);
   }
 
