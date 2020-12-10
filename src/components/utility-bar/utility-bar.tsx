@@ -3,7 +3,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import {SortContext, CategoryContext} from '../../screens/store/store';
+import {SortContext, CategoryContext, categoryOption, sortOption} from '../../screens/store/store';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -22,7 +22,6 @@ function UtilityBar() {
             <FormControl className={classes.formControl}>
                 <CategoryContext.Consumer>
                     {({category, toggleCategory}) => {
-                        console.log('category', category);
                         return (
                             <>
                                 <InputLabel id="category-select">Category</InputLabel>
@@ -30,7 +29,10 @@ function UtilityBar() {
                                     labelId="category-select-label"
                                     id="category-select"
                                     value={category}
-                                    onChange={e => toggleCategory(e.target.value)}
+                                    onChange={(e) => {
+                                        const category = (e.target.value as categoryOption);
+                                        toggleCategory(category);
+                                    }}
                                 >
                                 <MenuItem value="all">
                                     <em>All</em>
@@ -45,7 +47,6 @@ function UtilityBar() {
             </FormControl>
             <SortContext.Consumer>
                 {({sort, toggleSort}) => {
-                    console.log('sort', sort);
                     return (
                         <>
                             <FormControl className={classes.formControl}>
@@ -54,12 +55,15 @@ function UtilityBar() {
                                     labelId="sorth-select-label"
                                     id="sort-select"
                                     value={sort}
-                                    onChange={e => toggleSort(e.target.value)}
+                                    onChange={e => {
+                                        const sortBy = (e.target.value as sortOption);
+                                        toggleSort(sortBy);
+                                    }}
                                 >          
                                     <MenuItem value="none">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={'price'}>Price</MenuItem>
+                                    <MenuItem value='price'>Price</MenuItem>
                                 </Select>
                             </FormControl>
                         </>

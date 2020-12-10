@@ -3,7 +3,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import {SortContext, sortOptions, categoryOptions, CategoryContext} from '../../screens/store/store';
+import {SortContext, sortBy, categories, CategoryContext} from '../../screens/store/store';
 
 const demo_order_details = (id: number) => ({
   "payment_method": "bacs",
@@ -73,7 +73,7 @@ function ProductListItem(props: any) {
 
 
   return (
-    <ListItem key={id}>
+    <ListItem button key={id}>
       <ListItemText primary={`${name} (${categories[0].name})  price: $${parseFloat(price||0).toFixed(2)}`} />
       <ListItemIcon>
         <Button variant="contained" color="primary" disabled={disabled} onClick={processOrder}>
@@ -82,29 +82,6 @@ function ProductListItem(props: any) {
       </ListItemIcon>
     </ListItem>
   );
-}
-
-function SmartProductList(props:any) {
-  const {category, sort, products} = props;
-  let normalizedProducts = [];
-
-  if(category !== categoryOptions.all) {
-    normalizedProducts = products
-    .filter((product: any) => {
-      const condition = product.categories[0].slug === category;
-      return condition;
-    });
-  }
-
-  if(sort !== sortOptions.none) {
-    normalizedProducts = [...normalizedProducts].sort((a: any, b: any) => parseFloat(b.price||0) - parseFloat(a.price||0));
-  }
-
-  if(normalizedProducts.length === 0) {
-    normalizedProducts = products;
-  }
-
-  return normalizedProducts.map((product: any, idx: number) => <ProductListItem  category={category} sort={sort} key={idx} {...product}/>)
 }
 
 function ProductList() {
@@ -119,17 +96,24 @@ function ProductList() {
   return (
     <div className="product-list">
       <SortContext.Consumer>
-        {({sort}) => (
+        {({sort}) => {
+          const sorted = sort !== sortBy.none ? [...products].sort((a: any, b: any) => parseFloat(b.price||0) - parseFloat(a.price||0)) : products;
+          return (
             <CategoryContext.Consumer>
               {
-                ({category}) => (
+                ({category}) => {
+                const categorized = category !== categories.all ? sorted.filter((product: any) => {
+                  const condition = product.categories[0].slug === category;
+                  return condition;
+                }) : sorted;
+                return (
                   <ul>
-                    <SmartProductList category={category} sort={sort} products={products}/>
+                    {categorized.map((product: any, idx: number) => <ProductListItem key={idx} {...product}/>)}
                   </ul>
-                )
+                )}
               }
             </CategoryContext.Consumer>
-          )
+          )}
         }
       </SortContext.Consumer>
     </div>
