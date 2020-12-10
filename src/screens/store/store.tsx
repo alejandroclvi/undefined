@@ -1,12 +1,18 @@
 import './store.css';
 import {ProductList, UtilityBar} from '../../components';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 function Store() {
   return (
     <div className="store">
-      <h2>Undefined Store</h2>
-      <UtilityBar />
-      <ProductList />
+      <Container maxWidth="lg">
+        <Typography variant="h2" component="h2" gutterBottom>
+          Undefined Store
+        </Typography>
+        <UtilityBar />
+        <ProductList />
+      </Container>
     </div>
   );
 }

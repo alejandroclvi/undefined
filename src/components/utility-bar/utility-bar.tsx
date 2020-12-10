@@ -8,7 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 const useStyles = makeStyles((theme) => ({
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120,
+        minWidth: 160,
     },
     selectEmpty: {
         marginTop: theme.spacing(2),
@@ -39,9 +39,8 @@ function UtilityBar() {
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                <MenuItem value={'non-traditional'}>Non-traditional</MenuItem>
+                <MenuItem value={'classic'}>Classic</MenuItem>
                 </Select>
             </FormControl>
             <FormControl className={classes.formControl}>
