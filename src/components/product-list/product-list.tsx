@@ -10,20 +10,20 @@ const demo_order_details = (id: number) => ({
   "payment_method_title": "Direct Bank Transfer",
   "set_paid": true,
   "billing": {
-    "first_name": "John",
-    "last_name": "Doe",
+    "first_name": "Manuel",
+    "last_name": "Calvino",
     "address_1": "969 Market",
     "address_2": "",
     "city": "San Francisco",
     "state": "CA",
     "postcode": "94103",
     "country": "US",
-    "email": "john.doe@example.com",
-    "phone": "(555) 555-5555"
+    "email": "mcalvinolaguardia@gmail.com",
+    "phone": "(786) 626-7364"
   },
   "shipping": {
-    "first_name": "John",
-    "last_name": "Doe",
+    "first_name": "Manuel",
+    "last_name": "Calvino",
     "address_1": "969 Market",
     "address_2": "",
     "city": "San Francisco",
