@@ -1,12 +1,9 @@
 import {useState, useEffect} from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-
-// curl -X POST https://example.com/wp-json/wc/v3/orders \
-//     -u consumer_key:consumer_secret \
+import {SortContext, sortOptions, categoryOptions, CategoryContext} from '../../screens/store/store';
 
 const demo_order_details = (id: number) => ({
   "payment_method": "bacs",
@@ -57,19 +54,16 @@ function ProductListItem(props: any) {
 
   const processOrder = async () => {
     setDisable(true);
-    console.log('processOrder:called')
     const result = await fetch(`https://sandbox.undefined.ai/wp-json/wc/v3/orders${auth}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(demo_order_details(id)),
     });
     try {
       const order_details = await result.json();
-      console.log('order_details', order_details);
 
     } catch(e) {
+      // TODO: implement better error handler, ... notify user
       console.log('Error creating order', e);
     }
     setDisable(false);
@@ -78,7 +72,7 @@ function ProductListItem(props: any) {
 
   return (
     <ListItem key={id}>
-      <ListItemText primary={`${name} ${categories[0].name} - ${price}`} />
+      <ListItemText primary={`${name} (${categories[0].name})  price: $${parseFloat(price||0).toFixed(2)}`} />
       <ListItemIcon>
         <Button variant="contained" color="primary" disabled={disabled} onClick={processOrder}>
           Buy
@@ -88,23 +82,54 @@ function ProductListItem(props: any) {
   );
 }
 
+function SmartProductList(props:any) {
+  const {category, sort, products} = props;
+  let normalizedProducts = [];
+
+  if(category !== categoryOptions.all) {
+    normalizedProducts = products
+    .filter((product: any) => {
+      const condition = product.categories[0].slug === category;
+      return condition;
+    });
+  }
+
+  if(sort !== sortOptions.none) {
+    normalizedProducts = [...normalizedProducts].sort((a: any, b: any) => parseFloat(b.price||0) - parseFloat(a.price||0));
+  }
+
+  if(normalizedProducts.length === 0) {
+    normalizedProducts = products;
+  }
+
+  return normalizedProducts.map((product: any, idx: number) => <ProductListItem  category={category} sort={sort} key={idx} {...product}/>)
+}
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const fetchProducts = async () => {
     const products = await (await fetch(pUrl)).json();
-    console.log('products:fetched', products);
     setProducts(products);
   };
   useEffect(() => {
     fetchProducts();
   }, []);
-
   return (
     <div className="product-list">
-      <ul>
-        {products.map((product, idx) => <ProductListItem key={idx} {...product}/>)}
-      </ul>
+      <SortContext.Consumer>
+        {({sort}) => (
+            <CategoryContext.Consumer>
+              {
+                ({category}) => (
+                  <ul>
+                    <SmartProductList category={category} sort={sort} products={products}/>
+                  </ul>
+                )
+              }
+            </CategoryContext.Consumer>
+          )
+        }
+      </SortContext.Consumer>
     </div>
   );
 }
